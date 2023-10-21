@@ -11,14 +11,14 @@
 ;;      could be done better as the aoc problems will be taxing enough without waiting for hours
 ;;      for the string conversion !
 AsciiToInt:
-  cmp.b            #$30,d6             ; Check value if it's below our threshold >= 0x30 '0'
+  cmp.b            #$30,d6              ; Check value if it's below our threshold >= 0x30 '0'
   blt              .failure
-  cmp.b            #$39,d6             ; Check value if it's below our threshold <= 0x39 '9'
+  cmp.b            #$39,d6              ; Check value if it's below our threshold <= 0x39 '9'
   bgt              .failure
   .conversion:
   move.b           d6,d7
-  subi.b           #$30,d7             ; Subtract the lowest Symbol of the Ascii Digit Table (0x30 '0') from our input
-  rts                                  ; Done the result should be inside our d7 register
+  subi.b           #$30,d7              ; Subtract the lowest Symbol of the Ascii Digit Table (0x30 '0') from our input
+  rts                                   ; Done the result should be inside our d7 register
   .failure:
   move.l           #$FFFFFFFF,d7
   rts
@@ -36,16 +36,17 @@ ascii_to_int_tests:
   bne              .failure
   cmp.l            a1,a3
   beq              .win
-  jmp              .test_loop          ;This is fine for now but later on i should check if we reached the end of the testing range and just get the fuck out
+  jmp              .test_loop           ;This is fine for now but later on i should check if we reached the end of the testing range and just get the fuck out
 
 .failure:
   nop
-  jmp              .failure            ;Stuck here but there is a bug that needs fixing so that's good :)
+  jmp              .failure             ;Stuck here but there is a bug that needs fixing so that's good :)
   
 .win:
-  rts                                  ;Huge win everything was as expected AWESOME :D 
+  rts                                   ;Huge win everything was as expected AWESOME :D 
 
 
+  section          "ASCII_DATA",data
   zero             : dc.b '0'
   one              : dc.b '1'
   two              : dc.b '2'
@@ -56,6 +57,7 @@ ascii_to_int_tests:
   seven            : dc.b '7'
   eight            : dc.b '8'
   nine             : dc.b '9'
+  even
 
   inv_a            : dc.b 'a'
 
@@ -71,3 +73,4 @@ ascii_to_int_tests:
   result_nine      : dc.b 9
   result_inv       : dc.b $FFFFFFFF
   end_of_checks    : dc.b $FF
+  even

@@ -4,12 +4,13 @@
 ;
 
 ;---------- Const ----------
+;CIAA            = $00bfe001
+;COPPERLIST_SIZE = 1000             ;Size of the copperlist
+;LINE            = 100              ;<= 255
 
-CIAA            = $00bfe001
-COPPERLIST_SIZE = 1000             ;Size of the copperlist
-LINE            = 100              ;<= 255
+       section AOC,CODE
 
-init:
+start:
   move.w     #1,d0                 ;TODO: Build the Solutions
               ;;Execute all our manual test for our utility functions
   jsr        ascii_to_int_tests
