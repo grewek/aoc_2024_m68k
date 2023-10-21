@@ -3,6 +3,8 @@
 Soon this Project will be filled with Motorola 68k Solutions for the Advent of Code 2024
 As some setup is required for this project i will write all the Utility/Setup Code now.
 
+Also a huge thank you to the developers of the Amiga Assembly Plugin for VsCode, i might not be a huge fan of VS Code but the plugin is freaking AWESOME :D
+
 # TODO:
 
 __String Utilitys__:
@@ -17,3 +19,4 @@ __Load Data__:
 __Display__:
     Setup a Copperlist
     Draw Font on the Screen
+
