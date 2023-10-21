@@ -8,16 +8,17 @@
 ;COPPERLIST_SIZE = 1000             ;Size of the copperlist
 ;LINE            = 100              ;<= 255
 
-       section AOC,CODE
+  section    AOC,CODE
 
 start:
-  move.w     #1,d0                 ;TODO: Build the Solutions
+  move.w     #1,d0                    ;TODO: Build the Solutions
               ;;Execute all our manual test for our utility functions
   jsr        ascii_to_int_tests
+  jsr        string_to_value_tests
 ******************************************************************	
 mainloop:
   nop
-  jmp        mainloop              ;TODO: :]
+  jmp        mainloop                 ;TODO: :]
 
 ;---------- Includes ----------
   INCLUDE    "utilitys.s"
