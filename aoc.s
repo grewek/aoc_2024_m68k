@@ -13,6 +13,7 @@
 start:
   move.w     #1,d0                    ;TODO: Build the Solutions
               ;;Execute all our manual test for our utility functions
+  jsr        string_into_tokens
   jsr        ascii_to_int_tests
   jsr        string_to_value_tests
 ******************************************************************	
