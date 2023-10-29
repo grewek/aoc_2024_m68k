@@ -5,12 +5,14 @@
 ;;  a0 -> Start of the string
 ;; Destroys:
 ;;  d3 -> Next Character
-;; Returns:
+;; Returns: A pointer and a length
 ;;  d0 -> Start of the next token
-;;  d1 -> end of the token (explicitly pointing to the next whitepsace character so you need to subtract one from end to find the real end of the word) =)
+;;  d1 -> length of the token
 ;; NOTE: This function consumes a string piece by piece the value you get in d1 is the start of the next SplitWhitespace call
 SplitWhitespace:
-  move.l             a0,d0                               ;Our next potential start
+  clr.l              d0
+  clr.l              d1
+  move.l             a0,d0                               ;Store our current start
 .loop:
   move.b             (a0)+,d3
   cmp.b              #$20,d3                             ;Whitespace ! -> Get out
@@ -20,35 +22,10 @@ SplitWhitespace:
 .end:
   
   move.l             a0,d1                               ;Put our ending in d1 behaving like a good little tokenizer :]
+  sub.l              d0,d1
+  subq               #1,d1                               ;Subtract one from the position to filter out the last whitespace / null character !
   rts
-
-;;StrCpy
-;; Arguments:
-;; a0 -> Src
-;; d0 -> length
-;; a1 -> Dest
-;; Return:
-;; d2 -> Success 0x01 Failure 0xFF
-StrCopy:
-  cmp.w              #4,d0                               ;Nope we need to find out if it is a multiple of four !
-  jsr                .copyDwords                         ;Awesome :D
-  cmp.w              #2,d0                               ;Again find out if it is a multiple of two
-  jsr                .copyWords                          ;Yay
-  jsr                .copyBytes                          ;Fuck
   
-
-.copyDwords:
-  move.l             (a0)+,(a1)+
-  subi               #4,d0
-  cmp.l              #0,d0
-  beq.s              .end
-  jmp                .copyDwords
-.end
-  rts
-.copyWords:
-  rts
-.copyBytes:
-  rts
 ;;Ascii Symbol To Integer 
 ;; Converts a given Character into it's corosponding value
 ;;  i.e. ('0' => 0) ('1' => 1) ('2' => 2)...('9' => 9)
@@ -123,6 +100,43 @@ ascii_to_int_tests:
 string_into_tokens:
   lea                string_to_split,a0
   jsr                SplitWhitespace                     ;Let's see whats happening in the debugger ?!
+  ;"hello"
+  lea                string_to_split,a1
+  cmp.l              a1,d0                               ;Assert!(a0 == start of string)
+  bne                .failure
+  cmp.l              #5,d1                               ;Assert!(d1 === len(str) + 1)
+  bne                .failure
+  ;"my"
+  jsr                SplitWhitespace
+  lea                string_to_split,a1
+  add                #$6,a1
+  cmp.l              a1,d0
+  bne                .failure
+  cmp.l              #2,d1
+  bne                .failure
+  ;"little"
+  jsr                SplitWhitespace
+  lea                string_to_split,a1
+  add                #$9,a1
+  cmp.l              a1,d0
+  bne                .failure
+  cmp.l              #6,d1
+  bne                .failure
+  ;"token"
+  jsr                SplitWhitespace
+  lea                string_to_split,a1
+  add                #$10,a1
+  cmp.l              a1,d0
+  bne                .failure
+  cmp.l              #5,d1
+  bne                .failure
+  jmp                .win
+
+.failure:
+  nop
+  jmp                .failure
+.win:
+  rts
 
 string_to_value_tests:
   lea                value_ex_mixed,a0
@@ -161,6 +175,7 @@ string_to_value_tests:
   jsr                .check_values
 
   lea                value_ex_tst_g,a0
+  jsr                SplitWhitespace       
   jsr                StringToValue
   move.l             #1000000,d1
   jsr                .check_values
